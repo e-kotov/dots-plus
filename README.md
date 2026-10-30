@@ -10,23 +10,29 @@ It downloads through the Dots platform proxy (`browser-proxy:8889`). It needs no
 
 No terminal needed. Send this to your dot:
 
-> Clone `https://github.com/e-kotov/dots-tsapt` at tag `v0.1.0` into `/workspace/shared/dots-tsapt`, using `HTTPS_PROXY=http://browser-proxy:8889` and `HTTP_PROXY=http://browser-proxy:8889`. Run `bash install.sh`, then `/workspace/shared/.tsapt/bin/tsapt update` and `/workspace/shared/.tsapt/bin/tsapt install -y iperf3`, then `/workspace/shared/.tsapt/bin/tsrun iperf3 --version`. Show me the output.
+> Clone `https://github.com/e-kotov/dots-tsapt` at tag `v0.2.0` into `/workspace/shared/dots-tsapt`, using `HTTPS_PROXY=http://browser-proxy:8889` and `HTTP_PROXY=http://browser-proxy:8889`. Run `bash install.sh --shell`, then in a new shell run `apt update`, `apt install -y iperf3` and `iperf3 --version`. Show me the output.
 
-It works if the last command prints a version.
+It works if the last command prints a version. `--shell` is optional: it adds two lines to `~/.bashrc` and `~/.profile`, and `bash install.sh --no-shell` removes them.
 
 Files go under `/workspace/shared` because a Dots cleanup on 2026-10-23 was reported to delete other top-level `/workspace` folders.
 
 ## Use
 
+With `--shell`, use the normal names in any new shell:
+
 ```bash
-tsapt update                    # refresh package lists
-tsapt install -y <package>      # install with dependencies
-tsapt list                      # what tsapt installed
-tsapt remove <package>
-tsrun <program> [arguments]     # run an installed program
+apt update
+apt install -y <package>
+<program> [arguments]
+apt list                        # what tsapt installed
+apt remove <package>
 ```
 
-Both commands live in `/workspace/shared/.tsapt/bin`. `tsrun` sets the library path for that one program, so installed libraries cannot affect anything else on the computer.
+Without it, call `/workspace/shared/.tsapt/bin/tsapt` in place of `apt`, and put `/workspace/shared/.tsapt/bin/tsrun` in front of a program.
+
+The shell setup changes `PATH` only. The library path is set for each installed program as it starts, so installed libraries cannot affect anything else. A system program keeps priority over an installed one with the same name.
+
+Plain `apt` works only in a shell that reads those startup files. A tool that starts commands another way needs the full paths. `sudo apt` does not work, because the computer has no `sudo`.
 
 To use another proxy, or none, edit `TSAPT_PROXY` in `/workspace/shared/.tsapt/tsapt.conf`. `off` means a direct connection.
 

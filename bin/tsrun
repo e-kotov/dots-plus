@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 # Run a program installed by tsapt. Library paths apply to this program only.
+# Called as tsrun it takes a command; called through a link in path/ it runs that program.
 set -euo pipefail
-[ $# -gt 0 ] || { echo 'usage: tsrun <program> [arguments]' >&2; exit 2; }
 ROOT="$(cd -- "$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")/.." && pwd)/root"
 MULTIARCH="$(uname -m)-linux-gnu"
 export PATH="$ROOT/usr/bin:$ROOT/usr/sbin:$ROOT/usr/games:$PATH"
 export LD_LIBRARY_PATH="$ROOT/usr/lib/$MULTIARCH:$ROOT/usr/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+name="$(basename -- "$0")"
+if [ "$name" != tsrun ]; then
+  for dir in usr/bin usr/sbin usr/games; do
+    if [ -x "$ROOT/$dir/$name" ]; then exec "$ROOT/$dir/$name" "$@"; fi
+  done
+  echo "tsrun: $name is no longer installed" >&2
+  exit 127
+fi
+[ $# -gt 0 ] || { echo 'usage: tsrun <program> [arguments]' >&2; exit 2; }
 exec "$@"

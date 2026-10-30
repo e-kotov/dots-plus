@@ -27,6 +27,7 @@ REAL_APT_CACHE = os.environ.get("TSAPT_REAL_APT_CACHE", "/usr/bin/apt-cache")
 
 APT = TSAPT_DIR / "apt"
 ROOT = TSAPT_DIR / "root"
+PATH_DIR = TSAPT_DIR / "path"
 LISTS = APT / "state" / "lists"
 STATUS = APT / "state" / "status"
 ARCHIVES = APT / "cache" / "archives"
@@ -465,6 +466,24 @@ def fix_symlinks(file_lists):
                 path.symlink_to(os.path.relpath(inside, path.parent))
 
 
+def refresh_path():
+    # One link per installed program, each pointing at tsrun, so a plain program name works
+    # with its libraries while the library path stays out of the shell.
+    PATH_DIR.mkdir(parents=True, exist_ok=True)
+    names = set()
+    for sub_dir in ("usr/bin", "usr/sbin", "usr/games"):
+        folder = ROOT / sub_dir
+        if folder.is_dir():
+            names.update(p.name for p in folder.iterdir() if os.access(p, os.X_OK) and not p.is_dir())
+    for link in PATH_DIR.iterdir():
+        if link.name not in names:
+            link.unlink()
+    for name in names:
+        link = PATH_DIR / name
+        if not os.path.lexists(link):
+            link.symlink_to("../bin/tsrun")
+
+
 def ensure_lists(opts):
     if any(LISTS.glob("*_Packages")):
         return 0
@@ -546,7 +565,8 @@ def install(names, opts, flags, extra=()):
                 stream.write("\n".join(links) + "\n")
     fix_symlinks([files for _, _, files in done])
     rebuild_status()
-    print("Done. Run installed programs with: tsrun <program>")
+    refresh_path()
+    print("Done.")
     return 0
 
 
@@ -589,6 +609,7 @@ def remove(names):
         print("Removed: %s" % name)
     write_user_status([b for b in blocks if b["Package"] not in names])
     rebuild_status()
+    refresh_path()
     return rc
 
 

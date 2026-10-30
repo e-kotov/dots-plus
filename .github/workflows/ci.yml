@@ -12,7 +12,7 @@ jobs:
       - name: Offline tests
         run: python3 -m unittest discover -s tests
       - name: Shell syntax
-        run: for f in install.sh install-dots-tailscale.sh bin/tsrun tests/e2e.sh; do bash -n "$f"; done
+        run: for f in install.sh install-dots-tailscale.sh bin/tsrun env.sh tests/e2e.sh; do bash -n "$f"; done
       - name: dots-tailscale pin still matches its tag
         run: |
           tag=$(sed -n 's/^TAG=//p' install-dots-tailscale.sh)
