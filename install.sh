@@ -7,18 +7,20 @@ DEST="${TSAPT_DIR:-/workspace/shared/.tsapt}"
 MODE="${1:-}"
 case "$MODE" in ""|--shell|--no-shell) ;; *) echo "usage: install.sh [--shell|--no-shell]" >&2; exit 2 ;; esac
 [[ "$DEST" = /* && "$DEST" != *[[:space:]\|\&]* ]] || { echo "TSAPT_DIR must be an absolute path without spaces" >&2; exit 1; }
-BEGIN="# >>> dots-tsapt >>>"
-END="# <<< dots-tsapt <<<"
+BEGIN="# >>> dots-plus >>>"
+END="# <<< dots-plus <<<"
 
 remove_block() {
   [ -f "$1" ] || return 0
   sed -i "/^$BEGIN\$/,/^$END\$/d" "$1"
+  # Blocks written before the project was renamed.
+  sed -i "/^# >>> dots-tsapt >>>\$/,/^# <<< dots-tsapt <<<\$/d" "$1"
 }
 
 if [ "$MODE" = --no-shell ]; then
   remove_block "$HOME/.bashrc"
   remove_block "$HOME/.profile"
-  echo "Removed the dots-tsapt lines from your shell startup files."
+  echo "Removed the dots-plus lines from your shell startup files."
   exit 0
 fi
 

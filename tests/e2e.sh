@@ -23,10 +23,12 @@ if command -v iperf3; then exit 1; fi
 if "$T/tsrun" iperf3 --version; then exit 1; fi
 
 # Plain names through the optional shell setup.
+printf '# >>> dots-tsapt >>>\nexport OLD_BLOCK=1\n# <<< dots-tsapt <<<\n' >> "$HOME/.bashrc"
 bash "$HOME/src/install.sh" --shell
 bash "$HOME/src/install.sh" --shell
-[ "$(grep -c '^# >>> dots-tsapt >>>$' "$HOME/.bashrc")" = 1 ]
-[ "$(grep -c '^# >>> dots-tsapt >>>$' "$HOME/.profile")" = 1 ]
+if grep -q OLD_BLOCK "$HOME/.bashrc"; then exit 1; fi
+[ "$(grep -c '^# >>> dots-plus >>>$' "$HOME/.bashrc")" = 1 ]
+[ "$(grep -c '^# >>> dots-plus >>>$' "$HOME/.profile")" = 1 ]
 unset TSAPT_DIR
 for shell_flag in -ic -lc; do
   bash "$shell_flag" '[ "$(command -v apt-get)" = "$HOME/.tsapt/shims/apt-get" ]'
@@ -43,6 +45,6 @@ done
 bash -lc '[ "$(command -v apt-get)" = "$HOME/.tsapt-get/shims/apt-get" ]'
 [ "$(cat "$HOME/.tsapt-get/VERSION")" = "$(cat "$HOME/src/VERSION")" ]
 bash "$HOME/src/install.sh" --no-shell
-if grep -q dots-tsapt "$HOME/.bashrc" "$HOME/.profile"; then exit 1; fi
+if grep -q -e dots-plus -e dots-tsapt "$HOME/.bashrc" "$HOME/.profile"; then exit 1; fi
 SCRIPT
 runuser -u tester -- bash /home/tester/run.sh

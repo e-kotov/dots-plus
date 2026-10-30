@@ -1,4 +1,4 @@
-# dots-tsapt
+# dots-plus
 
 Install `apt` packages on a ChatGPT Dots cloud computer without root.
 
@@ -11,7 +11,7 @@ It downloads through the Dots platform proxy (`browser-proxy:8889`). It needs no
 Run this in the dot's terminal, or send it to your dot in chat. It also updates an existing install:
 
 ```bash
-curl -fsSL --proxy http://browser-proxy:8889 https://raw.githubusercontent.com/e-kotov/dots-tsapt/v0.2.1/get.sh | bash
+curl -fsSL --proxy http://browser-proxy:8889 https://raw.githubusercontent.com/e-kotov/dots-plus/v0.2.2/get.sh | bash
 ```
 
 Then check it in a new shell:
@@ -25,7 +25,7 @@ It works if the last command prints a version.
 The install puts everything under `/workspace/shared`, because a Dots cleanup on 2026-10-23 was reported to delete other top-level `/workspace` folders. It also adds two lines to `~/.bashrc` and `~/.profile` so that plain `apt` works. To remove those lines:
 
 ```bash
-bash /workspace/shared/dots-tsapt/install.sh --no-shell
+bash /workspace/shared/dots-plus/install.sh --no-shell
 ```
 
 ## Use
@@ -69,8 +69,11 @@ To use another proxy, or none, edit `TSAPT_PROXY` in `/workspace/shared/.tsapt/t
 
 CI installs and removes a real package as an unprivileged user on Debian 13, connecting directly. That container is not a Dots computer: it does not test the platform proxy.
 
-## Origin
+## Credits
 
-`bin/tsapt` and its tests come from [hostkimjang/dots-tsnet](https://github.com/hostkimjang/dots-tsnet) at commit `787057b0b1e01305fd9dea824d4b5cd9fa012eaf`, by kimjang, under the MIT licence. Changes: English messages, the platform proxy as default, renamed settings, and no exit-node check or `apt` command replacement. To get exit-node downloads, a shell-wide `apt` and SSH set up for you, use dots-tsnet itself.
+dots-plus builds on the work of two projects:
+
+- **[dots-tsnet](https://github.com/hostkimjang/dots-tsnet)** by kimjang (MIT). `bin/tsapt` and `tests/test_tsapt.py` come from commit `787057b0b1e01305fd9dea824d4b5cd9fa012eaf`, including the method of running `apt` without root. dots-plus changes the messages to English, makes the platform proxy the default, renames the settings, removes the exit-node check and sets the library path per program. The dots-tsnet copyright notice is kept in [LICENSE](LICENSE). For exit-node downloads and SSH set up for you, use dots-tsnet itself.
+- **[dots-tailscale](https://github.com/abruption/dots-tailscale)** by abruption and contributors (MIT). `install-dots-tailscale.sh` downloads it unmodified. No dots-tailscale code is included here.
 
 This project is not affiliated with OpenAI, Tailscale, dots-tsnet or dots-tailscale.
