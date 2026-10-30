@@ -17,9 +17,9 @@ sed -i 's/^TSAPT_PROXY=.*/TSAPT_PROXY=off/' "$TSAPT_DIR/tsapt.conf"
 "$T/tsapt" update
 "$T/tsapt" install -y iperf3
 "$T/tsapt" list | grep -q '^iperf3 '
-! command -v iperf3
+if command -v iperf3; then exit 1; fi
 "$T/tsrun" iperf3 --version
 "$T/tsapt" remove iperf3
-! "$T/tsrun" iperf3 --version
+if "$T/tsrun" iperf3 --version; then exit 1; fi
 SCRIPT
 runuser -u tester -- bash /home/tester/run.sh
