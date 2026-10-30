@@ -8,17 +8,29 @@ It downloads through the Dots platform proxy (`browser-proxy:8889`). It needs no
 
 ## Install
 
-No terminal needed. Send this to your dot:
+Run this in the dot's terminal, or send it to your dot in chat. It also updates an existing install:
 
-> Clone `https://github.com/e-kotov/dots-tsapt` at tag `v0.2.0` into `/workspace/shared/dots-tsapt`, using `HTTPS_PROXY=http://browser-proxy:8889` and `HTTP_PROXY=http://browser-proxy:8889`. Run `bash install.sh --shell`, then in a new shell run `apt update`, `apt install -y iperf3` and `iperf3 --version`. Show me the output.
+```bash
+curl -fsSL --proxy http://browser-proxy:8889 https://raw.githubusercontent.com/e-kotov/dots-tsapt/v0.2.1/get.sh | bash
+```
 
-It works if the last command prints a version. `--shell` is optional: it adds two lines to `~/.bashrc` and `~/.profile`, and `bash install.sh --no-shell` removes them.
+Then check it in a new shell:
 
-Files go under `/workspace/shared` because a Dots cleanup on 2026-10-23 was reported to delete other top-level `/workspace` folders.
+```bash
+apt update && apt install -y iperf3 && iperf3 --version
+```
+
+It works if the last command prints a version.
+
+The install puts everything under `/workspace/shared`, because a Dots cleanup on 2026-10-23 was reported to delete other top-level `/workspace` folders. It also adds two lines to `~/.bashrc` and `~/.profile` so that plain `apt` works. To remove those lines:
+
+```bash
+bash /workspace/shared/dots-tsapt/install.sh --no-shell
+```
 
 ## Use
 
-With `--shell`, use the normal names in any new shell:
+Use the normal names in any new shell:
 
 ```bash
 apt update
@@ -28,7 +40,7 @@ apt list                        # what tsapt installed
 apt remove <package>
 ```
 
-Without it, call `/workspace/shared/.tsapt/bin/tsapt` in place of `apt`, and put `/workspace/shared/.tsapt/bin/tsrun` in front of a program.
+Without the shell lines, call `/workspace/shared/.tsapt/bin/tsapt` in place of `apt`, and put `/workspace/shared/.tsapt/bin/tsrun` in front of a program.
 
 The shell setup changes `PATH` only. The library path is set for each installed program as it starts, so installed libraries cannot affect anything else. A system program keeps priority over an installed one with the same name.
 

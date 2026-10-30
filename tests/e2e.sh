@@ -3,7 +3,7 @@
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq --no-install-recommends python3 ca-certificates > /dev/null
+apt-get install -y -qq --no-install-recommends python3 ca-certificates git > /dev/null
 useradd --create-home tester
 cp -r /src /home/tester/src
 chown -R tester /home/tester/src
@@ -35,6 +35,13 @@ done
 bash -ic 'apt update && apt-get install -y iperf3 && iperf3 --version && [ -z "${LD_LIBRARY_PATH:-}" ]'
 bash -lc 'iperf3 --version && [ "$(command -v python3)" = /usr/bin/python3 ] && apt remove iperf3'
 if bash -lc 'command -v iperf3'; then exit 1; fi
+
+# One-line install, then the same line again as an update.
+for attempt in 1 2; do
+  TSAPT_GET_PROXY= TSAPT_SOURCE_DIR="$HOME/get" TSAPT_DIR="$HOME/.tsapt-get" bash < "$HOME/src/get.sh"
+done
+bash -lc '[ "$(command -v apt-get)" = "$HOME/.tsapt-get/shims/apt-get" ]'
+[ "$(cat "$HOME/.tsapt-get/VERSION")" = "$(cat "$HOME/src/VERSION")" ]
 bash "$HOME/src/install.sh" --no-shell
 if grep -q dots-tsapt "$HOME/.bashrc" "$HOME/.profile"; then exit 1; fi
 SCRIPT
