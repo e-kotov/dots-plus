@@ -1,0 +1,23 @@
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Offline tests
+        run: python3 -m unittest discover -s tests
+      - name: Shell syntax
+        run: for f in install.sh install-dots-tailscale.sh bin/tsrun tests/e2e.sh; do bash -n "$f"; done
+      - name: dots-tailscale pin still matches its tag
+        run: |
+          tag=$(sed -n 's/^TAG=//p' install-dots-tailscale.sh)
+          commit=$(sed -n 's/^COMMIT=//p' install-dots-tailscale.sh)
+          ls=$(git ls-remote https://github.com/abruption/dots-tailscale "refs/tags/$tag" "refs/tags/$tag^{}")
+          echo "$ls" | grep -q "^$commit"
+      - name: Real install on Debian 13 as an unprivileged user
+        run: docker run --rm -v "$PWD:/src:ro" debian:13 bash /src/tests/e2e.sh
