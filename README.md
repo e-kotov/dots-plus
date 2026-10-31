@@ -11,7 +11,7 @@ It downloads through the Dots platform proxy (`browser-proxy:8889`). It needs no
 Run this in the dot's terminal, or send it to your dot in chat. It also updates an existing install:
 
 ```bash
-curl -fsSL --proxy http://browser-proxy:8889 https://raw.githubusercontent.com/e-kotov/dots-plus/v0.2.2/get.sh | bash
+curl -fsSL --proxy http://browser-proxy:8889 https://raw.githubusercontent.com/e-kotov/dots-plus/v0.2.3/get.sh | bash
 ```
 
 Then check it in a new shell:

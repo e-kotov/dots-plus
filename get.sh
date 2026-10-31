@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-line install and update: fetch this release, then install it with the shell setup.
 set -euo pipefail
-TAG=v0.2.2
+TAG=v0.2.3
 DIR="${TSAPT_SOURCE_DIR:-/workspace/shared/dots-plus}"
 PROXY="${TSAPT_GET_PROXY-http://browser-proxy:8889}"
 if [ -n "$PROXY" ]; then export HTTPS_PROXY="$PROXY" HTTP_PROXY="$PROXY"; fi

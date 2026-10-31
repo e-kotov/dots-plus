@@ -8,8 +8,15 @@ SOURCE_DIR="${DOTS_TS_SOURCE_DIR:-/workspace/shared/dots-tailscale}"
 export DOTS_TS_DIR="${DOTS_TS_DIR:-/workspace/shared/.dots-tailscale}"
 PROXY="${UPSTREAM_PROXY:-http://browser-proxy:8889}"
 if [ ! -e "$SOURCE_DIR" ]; then
+  # Fetch the pinned commit itself: cloning the tag makes Git print warnings that look like failures.
+  tmp="$(mktemp -d "$SOURCE_DIR.XXXXXX")"
+  trap 'rm -rf "$tmp"' EXIT
+  git -C "$tmp" init --quiet
   HTTPS_PROXY="$PROXY" HTTP_PROXY="$PROXY" \
-    git clone --quiet --depth 1 --branch "$TAG" https://github.com/abruption/dots-tailscale "$SOURCE_DIR"
+    git -C "$tmp" fetch --quiet --depth 1 https://github.com/abruption/dots-tailscale "$COMMIT"
+  git -C "$tmp" -c advice.detachedHead=false checkout --quiet FETCH_HEAD
+  mv "$tmp" "$SOURCE_DIR"
+  trap - EXIT
 fi
 actual="$(git -C "$SOURCE_DIR" rev-parse HEAD)"
 if [ "$actual" != "$COMMIT" ]; then
