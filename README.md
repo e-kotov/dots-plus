@@ -61,9 +61,13 @@ To use another proxy, or none, edit `TSAPT_PROXY` in `/workspace/shared/.tsapt/t
 - Packages run with your account's rights, including access to anything else stored there. Use official sources.
 - `tsapt` opens no network path that the Dots computer does not already have.
 
+## Use at your own risk
+
+This is an unofficial project, provided as is with no warranty. The authors are not responsible for anything that results from using it, including data loss, security problems or action taken against your account. You are responsible for following the terms of OpenAI and of any other service you use.
+
 ## Optional: dots-tailscale
 
-`install-dots-tailscale.sh` installs [dots-tailscale](https://github.com/abruption/dots-tailscale) `v0.8.0`, unmodified, and refuses to continue if the code does not match the pinned commit. It places everything under `/workspace/shared` and does not sign in. `tsapt` does not use it. For signing in and for the SSH access dots-tailscale provides, read its [usage guide](https://github.com/abruption/dots-tailscale/blob/main/docs/usage.md).
+`install-dots-tailscale.sh` installs [dots-tailscale](https://github.com/abruption/dots-tailscale) `v0.8.0`, unmodified, and refuses to continue if the code does not match the pinned commit. It places everything under `/workspace/shared` and does not sign in. `tsapt` does not use it. **It tunnels Tailscale through the Dots network proxy, which may conflict with OpenAI's terms, and a dot may refuse to run it. Check this yourself before using it.** For signing in and for the SSH access dots-tailscale provides, read its [usage guide](https://github.com/abruption/dots-tailscale/blob/main/docs/usage.md).
 
 ## Testing
 
